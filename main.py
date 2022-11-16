@@ -1,22 +1,24 @@
+from typing import Tuple, cast
+
+from cryptography.exceptions import InvalidSignature
+from cryptography.hazmat.backends.openssl.rsa import (_rsa_sig_recover,
+                                                      _RSAPublicKey)
 from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 from cryptography.hazmat.primitives.hashes import SHA1
-from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
-from cryptography.exceptions import InvalidSignature
-from cryptography.hazmat.backends.openssl.rsa import _rsa_sig_recover, _RSAPublicKey
-from typing import Tuple, cast
 
 
 def get_public_rsa_key(file: str = "rsapubkey.pem") -> RSAPublicKey:
-    with open("rsapubkey.pem", "rb") as pub_key_file:
+    with open(file, "rb") as pub_key_file:
         return serialization.load_pem_public_key(pub_key_file.read())
 
 
 def get_signature_and_message(
-    signed_file: str, message: str = "text_clar.txt"
+    signed_file: str, message_file: str = "text_clar.txt"
 ) -> Tuple[bytes, bytes]:
     with open(signed_file, "rb") as signature:
-        with open(message, "rb") as message:
+        with open(message_file, "rb") as message:
             return signature.read(), message.read()
 
 
