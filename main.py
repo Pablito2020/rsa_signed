@@ -1,8 +1,7 @@
 from typing import Tuple, cast
 
 from cryptography.exceptions import InvalidSignature
-from cryptography.hazmat.backends.openssl.rsa import (_rsa_sig_recover,
-                                                      _RSAPublicKey)
+from cryptography.hazmat.backends.openssl.rsa import _RSAPublicKey
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
@@ -27,17 +26,11 @@ def check_signature_1():
     signature, message = get_signature_and_message(signed_file="text_signat.bin")
     if isinstance(public_key, _RSAPublicKey):
         cast(public_key, _RSAPublicKey)
-        backend = public_key._backend
-        my_bytes = _rsa_sig_recover(
-            backend=backend,
-            padding=PKCS1v15(),
-            algorithm=None,
-            public_key=public_key,
-            signature=signature,
-        )
-        if message == my_bytes:
+        try:
+            my_bytes = public_key.recover_data_from_signature(signature=signature, padding=PKCS1v15(), algorithm=None)
+            assert message == my_bytes
             print("Signature 1 (rsautl) is valid")
-        else:
+        except (InvalidSignature, AssertionError):
             print("Signature 1 (rsautl) is not valid")
 
 
