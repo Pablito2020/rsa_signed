@@ -22,7 +22,7 @@ def get_signature_and_message(
 
 
 def check_signature_1():
-    public_key = get_public_rsa_key()
+    public_key: RSAPublicKey = get_public_rsa_key()
     signature, message = get_signature_and_message(signed_file="text_signat.bin")
     if isinstance(public_key, _RSAPublicKey):
         cast(public_key, _RSAPublicKey)
@@ -35,7 +35,7 @@ def check_signature_1():
 
 
 def check_signature_2():
-    public_key = get_public_rsa_key()
+    public_key: RSAPublicKey = get_public_rsa_key()
     signature, message = get_signature_and_message(signed_file="text_signat2.bin")
     try:
         public_key.verify(signature, message, PKCS1v15(), SHA1())
